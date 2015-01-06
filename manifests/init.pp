@@ -35,7 +35,29 @@
 #
 # Copyright 2015 Your name here, unless otherwise noted.
 #
-class repomanager {
-
-
+class repomanager (
+  $zypprepos   = undef,
+  $zypprepodefaults = undef,
+  $obsdpkgconf = undef,
+) inherits repomanager::params {
+  case $osfamily {
+    'Suse': {
+      if $zypprepos {
+        if $zypprepodefaults {
+          create_resources(zypprepo, $zypprepos, $zypprepodefaults)
+        } else {
+          create_resources(zypprepo, $zypprepos)
+        }
+      }
+    }
+    'OpenBSD': {
+      class { 'repomanager::obsdpkgconf':
+        config         => $obsdpkgconf,
+        configdefaults => $params::obsdpkgconfdefaults,
+      }
+    }
+    'default': {
+      notify { "$::osfamily is not supported by repomanager": }
+    }
+  }
 }
