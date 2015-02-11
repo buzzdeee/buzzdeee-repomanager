@@ -42,11 +42,11 @@ class repomanager (
 ) inherits repomanager::params {
   case $osfamily {
     'Suse': {
-      if $zypprepos {
+      if $zypprepos["$::operatingsystem"][$::operatingsystemrelease] {
         if $zypprepodefaults {
-          create_resources(zypprepo, $zypprepos, $zypprepodefaults)
+          create_resources(zypprepo, $zypprepos["$::operatingsystem"][$::operatingsystemrelease], $zypprepodefaults)
         } else {
-          create_resources(zypprepo, $zypprepos)
+          create_resources(zypprepo, $zypprepos["$::operatingsystem"][$::operatingsystemrelease])
         }
       }
     }
