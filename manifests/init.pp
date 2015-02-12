@@ -43,6 +43,7 @@ class repomanager (
   case $osfamily {
     'Suse': {
       if $zypprepos["$::operatingsystem"][$::operatingsystemrelease] {
+        Zypprepo <| |> -> Package <| |>
         if $zypprepodefaults {
           create_resources(zypprepo, $zypprepos["$::operatingsystem"][$::operatingsystemrelease], $zypprepodefaults)
         } else {
@@ -51,6 +52,7 @@ class repomanager (
       }
     }
     'OpenBSD': {
+      Class['repomanager::obsdpkgconf'] -> Package <| |>
       class { 'repomanager::obsdpkgconf':
         config         => $obsdpkgconf,
         configdefaults => $params::obsdpkgconfdefaults,
