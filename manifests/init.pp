@@ -40,8 +40,15 @@ class repomanager (
   $zypprepodefaults = undef,
   $obsdpkgconf = undef,
 ) inherits repomanager::params {
-  case $osfamily {
+  case $::osfamily {
     'Suse': {
+      case $::operatingsystem {
+        'SLES': {
+          file { '/etc/cron.d/novell.com-suse_register':
+            ensure => 'absent',
+          }
+        }
+      }
       if $zypprepos["$::operatingsystem"][$::operatingsystemrelease] {
         Zypprepo <| |> -> Package <| |>
         if $zypprepodefaults {
