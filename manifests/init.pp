@@ -58,8 +58,8 @@ class repomanager (
         }
       }
       if $zypprepos[$::operatingsystem][$::operatingsystemrelease] {
-        Zypprepo <| |> -> Package <| |>
         $zypprepos[$::operatingsystem][$::operatingsystemrelease].each |$repo| {
+          Zypprepo[$repo] -> Package <| |>
           realize(Zypprepo[$repo])
         }
       }
