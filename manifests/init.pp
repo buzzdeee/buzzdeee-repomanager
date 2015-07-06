@@ -29,15 +29,16 @@
 #
 # === Authors
 #
-# Author Name <author@domain.com>
+# Sebastian Reitenbach <sebastia@l00-bugdead-prods.de>
 #
 # === Copyright
 #
-# Copyright 2015 Your name here, unless otherwise noted.
+# Copyright 2015 Sebastian Reitenbach, unless otherwise noted.
 #
 class repomanager (
-  $zypprepos   = undef,
-  $zypprepodefaults = undef,
+  $virtualzypprepos   = undef,
+  $virtualzypprepodefaults = undef,
+  $zypprepos = undef,
   $obsdpkgconf = undef,
 ) inherits repomanager::params {
   case $::osfamily {
@@ -49,12 +50,17 @@ class repomanager (
           }
         }
       }
-      if $zypprepos["$::operatingsystem"][$::operatingsystemrelease] {
-        Zypprepo <| |> -> Package <| |>
-        if $zypprepodefaults {
-          create_resources(zypprepo, $zypprepos["$::operatingsystem"][$::operatingsystemrelease], $zypprepodefaults)
+      if $virtualzypprepos[$::operatingsystem][$::operatingsystemrelease] {
+        if $virtualzypprepodefaults {
+          create_resources('@zypprepo', $virtualzypprepos[$::operatingsystem][$::operatingsystemrelease], $virtualzypprepodefaults)
         } else {
-          create_resources(zypprepo, $zypprepos["$::operatingsystem"][$::operatingsystemrelease])
+          create_resources('@zypprepo', $virtualzypprepos[$::operatingsystem][$::operatingsystemrelease])
+        }
+      }
+      if $zypprepos[$::operatingsystem][$::operatingsystemrelease] {
+        Zypprepo <| |> -> Package <| |>
+        $zypprepos[$::operatingsystem][$::operatingsystemrelease].each |$repo| {
+          realize(Zypprepo[$repo])
         }
       }
     }
