@@ -50,14 +50,14 @@ class repomanager (
           }
         }
       }
-      if $virtualzypprepos[$::operatingsystem][$::operatingsystemrelease] {
+      if $virtualzypprepos[$::operatingsystem] and $virtualzypprepos[$::operatingsystem][$::operatingsystemrelease] {
         if $virtualzypprepodefaults {
           create_resources('@zypprepo', $virtualzypprepos[$::operatingsystem][$::operatingsystemrelease], $virtualzypprepodefaults)
         } else {
           create_resources('@zypprepo', $virtualzypprepos[$::operatingsystem][$::operatingsystemrelease])
         }
       }
-      if $zypprepos[$::operatingsystem][$::operatingsystemrelease] {
+      if $zypprepos[$::operatingsystem] and $zypprepos[$::operatingsystem][$::operatingsystemrelease] {
         $zypprepos[$::operatingsystem][$::operatingsystemrelease].each |$repo| {
           Zypprepo[$repo] -> Package <| |>
           realize(Zypprepo[$repo])
