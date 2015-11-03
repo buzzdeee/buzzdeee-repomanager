@@ -71,6 +71,16 @@ class repomanager (
         configdefaults => $params::obsdpkgconfdefaults,
       }
     }
+    'Debian': {
+      case $::operatingsystem {
+        'Ubuntu': {
+          include apt
+          $ppa_repos = hiera_hash('repomanager::ppa_repos', {})
+          create_resources('apt::ppa', $ppa_repos, {require => Class['apt']})
+          Class['apt::update'] -> Package<| |>
+        }
+      }
+    }
     'default': {
       notify { "$::osfamily is not supported by repomanager": }
     }
