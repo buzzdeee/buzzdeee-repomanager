@@ -1,6 +1,6 @@
 class repomanager::obsdpkgconf (
   $config,
-  $configdefaults
+  $configdefaults,
 ) {
   if $config {
     $pkgconfig = deep_merge($configdefaults, $config)

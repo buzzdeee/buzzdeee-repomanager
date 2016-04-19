@@ -1,5 +1,7 @@
 fullwidth = <%= @pkgconfig['fullwidth'] %>
 loglevel = <%= @pkgconfig['loglevel'] %>
-installpath = <%= @pkgconfig['installpath'] %>
+<% @pkgconfig['installpath'].each do |path| -%>
+installpath += <%= path %>
+<% end -%>
 nochecksum = <%= @pkgconfig['nochecksum'] %>
 ntogo = <%= @pkgconfig['ntogo'] %>
