@@ -77,7 +77,9 @@ class repomanager (
           include apt
           $ppa_repos = hiera_hash('repomanager::ppa_repos', {})
           create_resources('apt::ppa', $ppa_repos, {require => Class['apt']})
-          Class['apt::update'] -> Package <| provider == 'apt' |>
+          Package <| provider == 'apt' |> {
+            require +> Class['apt::update']
+          }
         }
       }
     }
