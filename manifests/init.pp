@@ -75,11 +75,25 @@ class repomanager (
       case $::operatingsystem {
         'Ubuntu': {
           include apt
+
+          $apt_settings = hiera_hash('apt::apt_settings', {})
+          create_resources('apt::setting', $apt_settings)
+
+          $apt_sources = hiera_hash('apt::apt_sources', {})
+          create_resources('apt::source', $apt_sources)
+
+          $apt_pins = hiera_hash('apt::apt_pins', {})
+          create_resources('apt::pin', $apt_pins)
+
           $ppa_repos = hiera_hash('repomanager::ppa_repos', {})
           create_resources('apt::ppa', $ppa_repos, {require => Class['apt']})
-          Package <| provider == 'apt' |> {
-            require +> Class['apt::update']
-          }
+
+          # Exec['apt_update'] -> Package <| provider == 'apt' |>
+          # does't work, Implicit properties aren’t searchable by collectors :(
+          Class['apt::update'] ->
+          Package <| provider != 'pip' and provider != 'dpkg' and provider != 'gem' |>
+
+          include 'repomanager::apt_s3_driver'
         }
       }
     }
